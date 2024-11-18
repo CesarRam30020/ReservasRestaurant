@@ -13,17 +13,19 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+    private $answer = [
+        'data' => '',
+        'message' => '',
+        'code' => 200,
+    ];
+
     public function index() {
         return view('landing');
     }
 
     public function reservar(Request $request) {
         try {
-            $answer = [
-                'data' => '',
-                'message' => '',
-                'code' => 200,
-            ];
+            $answer = $this->answer;
             $comensales = $request['customers'];
             $fecha = Carbon::parse($request['date']);
             $mesa = Mesa::getTableAvailable($fecha, $comensales);
@@ -64,12 +66,29 @@ class HomeController extends Controller
             return response()->json($answer, $answer['code']);
         }
     }
+
+    public function reserva(int $id) {
+        $answer = $this->answer;
+        $reserva = Reserva::find($id);
+        $answer['message'] = "Lo sentimos, no existe una reserva con dicho numero de reserva. Intento con uno diferente";
+        $answer['code'] = 400;
+        $answer['data'] = null;
+
+        if ($reserva != null) {
+            $answer['message'] = "La reserva fue encontrada";
+            $answer['code'] = 200;
+            $answer['data'] = $reserva;
+        }
+
+        return response()->json($answer, $answer['code']);
+    }
 }
 
 class NoTableException extends Exception {
     public function __construct(
         $message = "No se encontraror mesas disponibles",
-        $code = 400, $previous = null
+        $code = 400,
+        $previous = null
     ) {
         parent::__construct($message, $code, $previous);
     }

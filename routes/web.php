@@ -16,6 +16,11 @@ Route::group(['prefix' => '/home'], function () {
         'uses' => 'App\Http\Controllers\HomeController@reservar',
         'as' => 'reservar'
     ]);
+
+    Route::get('/reserva/{id}', [
+        'uses' => 'App\Http\Controllers\HomeController@reserva',
+        'as' => 'reserva'
+    ]);
 });
 
 Route::middleware([

@@ -7,6 +7,8 @@
 
   <title>Sabor a México</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
@@ -119,7 +121,12 @@
   <div class="container mt-5" id="reservar">
     <div class="card">
       <div class="card-body">
-        <h3 class="card-title">Reservaciones</h3>
+        <div class="row">
+            <h3 class="card-title col-11">Reservaciones</h3>
+            <a style="cursor: pointer;" class="col-1 btn btn-rounded btn-xm btn-primary" onclick="showSearchModal();">
+              <i class="fas fa-search"></i>
+            </a>
+          </div>
         <div class="row">
           <div class="col-12">
             <div class="calendar-header text-center">
@@ -160,6 +167,33 @@
           <div class="col-12 mt-2 text-center">
             <button class="col-12 mt-2 btn btn-primary" onclick="enviar();">Reservar</button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="searchBookingModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Buscador de reservas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <label for="no_reserva">#Reserva</label>
+              <input type="text" class="form-control" id="no_reserva">
+            </div>
+
+            <div class="col-12 mt-3" id="reserva_content">
+              
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" onclick="searchBooking();">Buscar</button>
         </div>
       </div>
     </div>
@@ -250,6 +284,62 @@
           icon: icon,
           confirmButtonText: 'Aceptar'
         });
+      });
+    };
+
+    const showSearchModal = () => {
+      var myModal = new bootstrap.Modal(document.getElementById('searchBookingModal'));
+      myModal.show();
+    };
+
+    const searchBooking = async () => {
+      const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      const no_reserva = document.getElementById('no_reserva').value;
+      const  url = "{{ route('reserva', ':id') }}".replace(':id', no_reserva);
+
+      await fetch(url)
+      .then(res => res.json())
+      .then(res => {
+        if (res.code == 400) {
+          Swal.fire({
+            title: '¡Error!',
+            text: res.message,
+            icon: 'error',
+            confirmButtonText: 'Aceptar'
+          });
+          return;
+        }
+
+        const reserva = res.data;
+        const contenidoReserva = document.getElementById('reserva_content');
+
+        const card = document.createElement('div');
+        const cardBody = document.createElement('div');
+        const cardTitle = document.createElement('h4');
+        const cardContent = document.createElement('div');
+        let estatus = "Activa";
+        if (reserva.estatus == 'C') estatus = "Cancelada";
+        else if (reserva.estatus == "T") estatus = "Terminado";
+
+        const contenido = `Comensales: ${reserva.comensales}
+        <br>Fecha y hora: ${reserva.fecha_hora}
+        <br>Estatus: ${estatus}`;
+
+        card.classList.add('card');
+
+        cardBody.classList.add('card-body');
+
+        cardTitle.classList.add('card-title');
+        cardTitle.innerHTML = `#Reserva ${reserva.id}`;
+
+        cardContent.classList.add('card-content');
+
+        cardContent.innerHTML = contenido;
+        cardBody.appendChild(cardTitle);
+        cardBody.appendChild(cardContent);
+        card.appendChild(cardBody);
+
+        contenidoReserva.appendChild(card);
       });
     };
 
