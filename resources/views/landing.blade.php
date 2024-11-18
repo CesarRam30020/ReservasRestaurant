@@ -166,6 +166,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
     // Variables globales
@@ -232,17 +233,23 @@
           customers: document.getElementById('comensales').value,
         })
       })
+      .then(res => res.json())
       .then(res => {
-        if (!res.ok)
-          throw new Error('Ocurrio un error');
+        let title = '¡Error!';
+        let text = res.message;
+        let icon = 'error';
 
-        return res.json();
-      })
-      .then(res => {
-        alert(`La respuesta es ${res}`);
-      })
-      .catch(error => {
-        alert(error);
+        if (res.code == 200) {
+          title = '¡Bien!';
+          icon = 'success';
+        }
+
+        Swal.fire({
+          title: title,
+          text: text,
+          icon: icon,
+          confirmButtonText: 'Aceptar'
+        });
       });
     };
 

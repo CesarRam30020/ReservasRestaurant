@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('reservas', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('mesa_id')->unsigned()->nullable();
-            $table->integer('no_reserva')->nullable();
             $table->integer('comensales');
             $table->timestamp('fecha_hora');
             $table->string('estatus', 10)->default('A')->comment('A = Activo, C = Cancelado, T = Terminado');

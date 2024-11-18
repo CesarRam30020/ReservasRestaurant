@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Mesa;
 use App\Models\Reserva;
+use Carbon\Carbon;
+use DateException;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -23,8 +25,15 @@ class HomeController extends Controller
                 'code' => 200,
             ];
             $comensales = $request['customers'];
-            $fecha = $request['date'];
+            $fecha = Carbon::parse($request['date']);
             $mesa = Mesa::getTableAvailable($fecha, $comensales);
+            $fechaActual = Carbon::now();
+
+            if ($fechaActual > $fecha)
+                throw new DateException(
+                    'Lo sentimos, pero no es posible hacer una reservación para una fecha u hora anterior... A menos que sea usted un viajero del tiempo 😱',
+                    400
+                );
 
             if ($mesa == null)
                 throw new NoTableException(
@@ -35,15 +44,18 @@ class HomeController extends Controller
             DB::beginTransaction();
             $reserva = new Reserva();
             $reserva->mesa_id = $mesa->id;
-            $reserva->no_reserva = 1;
             $reserva->comensales = $comensales;
             $reserva->fecha_hora = $fecha;
             $reserva->estatus = 'A';
             $reserva->save();
+
+            $answer['data'] = $reserva;
+            $answer['message'] = "Su reserva fue exitosa #Reserva: " . $reserva->id;
+            $answer['code'] = 200;
             DB::commit();
-        } catch (NoTableException $nt) {
-            $answer['message'] = $nt->getMessage();
-            $answer['code'] = $nt->getCode();
+        } catch (NoTableException | DateException $e) {
+            $answer['message'] = $e->getMessage();
+            $answer['code'] = $e->getCode();
         } catch (QueryException $qe) {
             DB::rollBack();
             $answer['message'] = 'Hubo un error al guardar tu reservación, por favor intentalo más tarde.';
