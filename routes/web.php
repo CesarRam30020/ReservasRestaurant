@@ -33,15 +33,25 @@ Route::middleware([
     })->name('dashboard');
 
     Route::group(['prefix' => '/app'], function () {
-        Route::get('/', [
-            'uses' => 'App\Http\Controllers\AppController@reservas',
-            'as' => 'appIndex'
-        ]);
+        Route::group(['prefix' => '/reservas'], function () {
+            Route::get('/', [
+                'uses' => 'App\Http\Controllers\AppController@reservas',
+                'as' => 'appIndex'
+            ]);
+        });
 
-        Route::get('/mesas', [
-            'uses' => 'App\Http\Controllers\AppController@mesas',
-            'as' => 'appMesas'
-        ]);
+        Route::group(['prefix' => '/mesas'], function () {
+            Route::get('/', [
+                'uses' => 'App\Http\Controllers\AppController@mesas',
+                'as' => 'appMesas'
+            ]);
+
+            Route::post('/editar', [
+                'uses' => 'App\Http\Controllers\AppController@editarMesas',
+                'as' => 'appMesasEdit'
+            ]);
+        });
+
     });
 
 });

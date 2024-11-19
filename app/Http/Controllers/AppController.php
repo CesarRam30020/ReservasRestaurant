@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Mesa;
 use App\Models\Reserva;
 use Carbon\Carbon;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
+    private $answer = [
+        "data" => "",
+        "message" => "",
+        "code" => 200
+    ];
+
     public function reservas(Request $request) {
         $querys = [];
         
@@ -52,5 +61,40 @@ class AppController extends Controller
         return view('app.mesas', [
             "mesas" => $mesas
         ]);
+    }
+
+    public function editarMesas(Request $request) {
+        try {
+            $answer = $this->answer;
+            
+            DB::beginTransaction();
+            if ($request['mesa_id'] != ""){
+                $mesa = Mesa::find($request['mesa_id']);
+                $accion = "editada";
+            } else {
+                $mesa = new Mesa();
+                $accion = "creada";
+            }
+
+            $mesa->nombre = $request['nom'];
+            $mesa->descripcion = $request['desc'];
+            $mesa->espacios = $request['espacios'];
+            $mesa->save();
+
+            $answer['data'] = $mesa->id;
+            $answer['message'] = "Mesa ". $accion ." correctamente.";
+            $answer['code'] = 200;
+            DB::commit();
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            $answer['message'] = "No se pudo guardar la mesa, intentelo más tarde.";
+            $answer['code'] = 500;
+        } catch (Exception $e) {
+            $answer['code'] = 500;
+            $answer['message'] = $e->getMessage();
+        } finally {
+            return response()->json($answer, $answer['code']);
+        }
+        
     }
 }
