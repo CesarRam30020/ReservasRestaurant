@@ -19,7 +19,7 @@
     .hero {
       position: relative;
       height: 100vh;
-      background-image: url('images/interior.png');
+      background-image: url('{{ asset('images/interior.png') }}');
       background-size: cover;
       /* background-position: center; */
       background-repeat: no-repeat;
@@ -216,7 +216,7 @@
     }
 
     // Función para generar el calendario
-    function generateCalendar(date) {
+    const generateCalendar = (date) => {
       calendar.innerHTML = ""; // Limpiar el contenido del calendario
       const year = date.getFullYear();
       const month = date.getMonth();
@@ -250,7 +250,7 @@
         });
         calendar.appendChild(dayCell);
       }
-    }
+    };
 
     const enviar = async () => {
       const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -310,8 +310,10 @@
           return;
         }
 
-        const reserva = res.data;
         const contenidoReserva = document.getElementById('reserva_content');
+        contenidoReserva.innerHTML = "";
+        
+        const reserva = res.data;
 
         const card = document.createElement('div');
         const cardBody = document.createElement('div');

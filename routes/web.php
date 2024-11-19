@@ -29,6 +29,19 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        return redirect()->route('appIndex');
     })->name('dashboard');
+
+    Route::group(['prefix' => '/app'], function () {
+        Route::get('/', [
+            'uses' => 'App\Http\Controllers\AppController@reservas',
+            'as' => 'appIndex'
+        ]);
+
+        Route::get('/mesas', [
+            'uses' => 'App\Http\Controllers\AppController@mesas',
+            'as' => 'appMesas'
+        ]);
+    });
+
 });
