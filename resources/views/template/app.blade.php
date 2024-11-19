@@ -70,9 +70,13 @@
       <div class="container-fluid">
         <a class="navbar-brand" href="#">¡Bienbenido a Sabor a México!</a>
         <div class="d-flex">
-          <a href="{{route('main')}}">
-            <i class="fa-solid fa-arrow-left"></i>
-          </a>
+          
+          <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="btn btn-rounded text-danger" title="Cerrar Sesión">
+              <i class="fa-solid fa-power-off"></i>
+            </button>
+          </form>
         </div>
       </div>
     </nav>
