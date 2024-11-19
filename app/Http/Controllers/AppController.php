@@ -80,11 +80,11 @@ class AppController extends Controller
             $mesa->descripcion = $request['desc'];
             $mesa->espacios = $request['espacios'];
             $mesa->save();
+            DB::commit();
 
             $answer['data'] = $mesa->id;
             $answer['message'] = "Mesa ". $accion ." correctamente.";
             $answer['code'] = 200;
-            DB::commit();
         } catch (QueryException $qe) {
             DB::rollBack();
             $answer['message'] = "No se pudo guardar la mesa, intentelo más tarde.";
@@ -96,5 +96,28 @@ class AppController extends Controller
             return response()->json($answer, $answer['code']);
         }
         
+    }
+
+    public function eliminarMesas(int $id) {
+        try {
+            $answer = $this->answer;
+
+            DB::beginTransaction();
+            $mesa = Mesa::find($id);
+            $mesa->delete();
+            DB::commit();
+
+            $answer['code'] = 200;
+            $answer['message'] = "Mesa eliminada correctamente.";
+        } catch (QueryException $qw) {
+            $answer['code'] = 500;
+            $answer['message'] = "Lo sentimos, no fue posible eliminar la mesa, intentelo más tarde.";
+            DB::rollBack();
+        } catch (Exception $e) {
+            $answer['code'] = 500;
+            $answer['message'] = $e->getMessage();
+        } finally {
+            return response()->json($answer, $answer['code']);
+        }
     }
 }

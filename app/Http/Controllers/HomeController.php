@@ -82,6 +82,27 @@ class HomeController extends Controller
 
         return response()->json($answer, $answer['code']);
     }
+
+    public function reservaCancelar(Request $request) {
+        try {
+            $answer = $this->answer;
+
+            DB::beginTransaction();
+            $reserva = Reserva::find($request['reserva_id']);
+            $reserva->estatus = "C";
+            $reserva->save();
+            DB::commit();
+
+            $answer['code'] = 200;
+            $answer['message'] = "Reserva cancelada correctamente.";
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            $answer['code'] = 500;
+            $answer['message'] = "No fue posible cancelar la venta, por favor intentelo más tarde.";
+        } finally {
+            return response()->json($answer, $answer['code']);
+        }
+    }
 }
 
 class NoTableException extends Exception {

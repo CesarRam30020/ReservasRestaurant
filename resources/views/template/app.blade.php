@@ -56,14 +56,13 @@
 @yield('css')
 </head>
 <body>
-
   <!-- Menú lateral -->
   <div class="sidebar">
     <h3 class="text-white text-center">Sabor a México</h3>
     <a href="{{ route('appIndex') }}" class="resaltado">Reservas</a>
     <a href="{{ route('appMesas') }}" class="resaltado mt-2">Mesas</a>
   </div>
-
+  
   <!-- Contenido principal -->
   <div class="content">
     <!-- Barra superior -->
@@ -71,6 +70,9 @@
       <div class="container-fluid">
         <a class="navbar-brand" href="#">¡Bienbenido a Sabor a México!</a>
         <div class="d-flex">
+          <a href="{{route('main')}}">
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
         </div>
       </div>
     </nav>
@@ -90,7 +92,6 @@
   <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
   @yield('js')
 </body>

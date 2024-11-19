@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('home');
-});
+})->name('main');
 
 Route::group(['prefix' => '/home'], function () {
     Route::get('/', [
@@ -20,6 +20,11 @@ Route::group(['prefix' => '/home'], function () {
     Route::get('/reserva/{id}', [
         'uses' => 'App\Http\Controllers\HomeController@reserva',
         'as' => 'reserva'
+    ]);
+
+    Route::post('/reserva/cancelar', [
+        'uses' => 'App\Http\Controllers\HomeController@reservaCancelar',
+        'as' => 'reservaCancelar'
     ]);
 });
 
@@ -50,8 +55,11 @@ Route::middleware([
                 'uses' => 'App\Http\Controllers\AppController@editarMesas',
                 'as' => 'appMesasEdit'
             ]);
+
+            Route::delete('/delete/{id}', [
+                'uses' => 'App\Http\Controllers\AppController@eliminarMesas',
+                'as' => 'appMesasDelete'
+            ]);
         });
-
     });
-
 });

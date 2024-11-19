@@ -160,7 +160,39 @@
         let text = res.message;
         let icon = "success";
 
-        console.log(res);
+        if (res.code != 200) {
+          title = '¡Lo sentimos!';
+          icon = 'error';
+        }
+
+        Swal.fire({
+          title: title,
+          text: text,
+          icon: icon,
+          confirmButtonText: 'Aceptar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            location.reload();
+          }
+        });
+      });
+    };
+
+    const deleteTable = async (id) => {
+      const url = `{{ route('appMesasDelete', ':id') }}`.replace(':id', id);
+
+      await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+      })
+      .then(res => res.json())
+      .then(res => {
+        let title = "¡Bien!";
+        let text = res.message;
+        let icon = "success";
 
         if (res.code != 200) {
           title = '¡Lo sentimos!';
