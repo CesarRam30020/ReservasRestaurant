@@ -26,6 +26,11 @@ Route::group(['prefix' => '/home'], function () {
         'uses' => 'App\Http\Controllers\HomeController@reservaCancelar',
         'as' => 'reservaCancelar'
     ]);
+
+    Route::post('/reserva/editar', [
+        'uses' => 'App\Http\Controllers\HomeController@reservaEditar',
+        'as' => 'reservaEditar'
+    ]);
 });
 
 Route::middleware([

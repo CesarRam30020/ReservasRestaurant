@@ -103,6 +103,50 @@ class HomeController extends Controller
             return response()->json($answer, $answer['code']);
         }
     }
+
+    public function reservaEditar(Request $request) {
+        try {
+            $answer = $this->answer;
+            $comensales = $request['customers'];
+            $fecha = Carbon::parse($request['date']);
+            $mesa = Mesa::getTableAvailable($fecha, $comensales);
+            $fechaActual = Carbon::now();
+
+            if ($fechaActual > $fecha)
+                throw new DateException(
+                    'Lo sentimos, pero no es posible hacer una reservación para una fecha u hora anterior... A menos que sea usted un viajero del tiempo 😱',
+                    400
+                );
+
+            if ($mesa == null)
+                throw new NoTableException(
+                    "No hay mesas para " . $comensales . " en el horario " . $fecha . ' intenta en otro horario u otro día',
+                    400
+                );
+
+            DB::beginTransaction();
+            $reserva = Reserva::find($request['reserva_id']);
+            $reserva->mesa_id = $mesa->id;
+            $reserva->comensales = $comensales;
+            $reserva->fecha_hora = $fecha;
+            $reserva->estatus = 'A';
+            $reserva->save();
+
+            $answer['data'] = $reserva;
+            $answer['message'] = "Su reserva fue editada exitosamente #Reserva: " . $reserva->id;
+            $answer['code'] = 200;
+            DB::commit();
+        } catch (NoTableException | DateException $e) {
+            $answer['message'] = $e->getMessage();
+            $answer['code'] = $e->getCode();
+        } catch (QueryException $qe) {
+            DB::rollBack();
+            $answer['message'] = 'Hubo un error al editar tu reservación, por favor intentalo más tarde.';
+            $answer['code'] = 500;
+        } finally {
+            return response()->json($answer, $answer['code']);
+        }
+    }
 }
 
 class NoTableException extends Exception {

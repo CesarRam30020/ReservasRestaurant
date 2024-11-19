@@ -16,7 +16,14 @@
       font-family: Arial, sans-serif;
       overflow-x: hidden;
     }
-
+    .hr-custom {
+      border: 0;
+      border-top: 2px dashed #6c757d;
+      margin: 0;
+    }
+    .hr-custom:first-child {
+      margin-top: 1.5rem;
+    }
     .hero {
       position: relative;
       height: 100vh;
@@ -25,7 +32,6 @@
       /* background-position: center; */
       background-repeat: no-repeat;
     }
-
     .hero-content {
       position: absolute;
       top: 50%;
@@ -33,32 +39,26 @@
       transform: translateY(-50%);
       color: white;
     }
-
     .hero-content h1 {
       font-size: 3rem;
       font-weight: bold;
     }
-
     .hero-content ul {
       list-style: none;
       padding: 0;
     }
-
     .hero-content ul li {
       margin: 10px 0;
     }
-
     .hero-content ul li a {
       color: white;
       text-decoration: none;
       font-size: 1.2rem;
       transition: color 0.3s;
     }
-
     .hero-content ul li a:hover {
       color: green; /* Color dorado al pasar el mouse */
     }
-
     /* Estilos calendario */
     .calendar-container {
       display: grid;
@@ -67,14 +67,12 @@
       padding: 20px;
       text-align: center;
     }
-
     .calendar-header {
       grid-column: span 7; /* Abarca las 7 columnas */
       font-weight: bold;
       font-size: 1.5rem;
       margin-bottom: 10px;
     }
-
     .day {
       background-color: #f8f9fa; /* Fondo claro */
       border: 1px solid #ddd;
@@ -83,27 +81,29 @@
       cursor: pointer;
       transition: 0.3s;
     }
-
     .day:hover {
       background-color: #f4f4f4;
       transform: scale(1.05);
     }
-
     .day.selected {
       background-color: #007bff;
       color: white;
     }
-
     .day.inactive {
       color: #aaa;
       pointer-events: none;
     }
-
     .loginButton {
       float: right;
       padding-right: 2%;
       padding-top: 2%;
       color: #ffffff;
+    }
+    .instagram:hover {
+      color: #bc1888;
+    }
+    .facebook:hover {
+      color: #007bff;
     }
   </style>
 </head>
@@ -175,12 +175,15 @@
           </div>
 
           <div class="col-12 mt-2 text-center">
-            <button class="col-12 mt-2 btn btn-primary" onclick="enviar();">Reservar</button>
+            <input type="hidden" id="reserva_id">
+            <button class="col-12 mt-2 btn btn-primary" onclick="enviar();" id="buttonReservar">Reservar</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <br><hr class="hr-custom">
 
   <div class="container mt-5" id="donde_estamos">
     <h3>Donde encontrarnos</h3>
@@ -190,7 +193,7 @@
     <div id="map" style="width: 100%; height: 500px;"></div>
   </div>
 
-  <hr>
+  <br><hr class="hr-custom">
 
   <div class="container mt-5" id="FAQs">
     <h3>FAQs</h3>
@@ -258,6 +261,8 @@
     </div>
   </div>
 
+  <br><hr class="hr-custom">
+
   <div class="container mt-5" id="contacto">
     <h3 class="mb-4">Contacto</h3>
     <div class="row">
@@ -279,10 +284,10 @@
         <h5>Redes Sociales</h5>
         <div class="d-flex justify-content-center gap-3">
           <a href="https://facebook.com" target="_blank" class="text-decoration-none text-dark">
-            <i class="fab fa-facebook fa-2x"></i>
+            <i class="fab fa-facebook fa-2x facebook"></i>
           </a>
           <a href="https://instagram.com" target="_blank" class="text-decoration-none text-dark">
-            <i class="fab fa-instagram fa-2x"></i>
+            <i class="fab fa-instagram fa-2x instagram"></i>
           </a>
           <a href="https://tiktok.com" target="_blank" class="text-decoration-none text-dark">
             <i class="fab fa-tiktok fa-2x"></i>
@@ -381,7 +386,7 @@
       }
     };
 
-    const enviar = async () => {
+    const registrar = async () => {
       const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
       const hora = document.getElementById('hora').value;
       
@@ -412,8 +417,60 @@
           text: text,
           icon: icon,
           confirmButtonText: 'Aceptar'
+        }).then(result => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
         });
       });
+    };
+
+    const editar = async (id) => {
+      const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+      const hora = document.getElementById('hora').value;
+      
+      await fetch(`{{ route('reservaEditar') }}`, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": token
+        },
+        body: JSON.stringify({
+          reserva_id: id,
+          date: daySelected + ` ${hora}`,
+          customers: document.getElementById('comensales').value,
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        let title = '¡Error!';
+        let text = res.message;
+        let icon = 'error';
+
+        if (res.code == 200) {
+          title = '¡Bien!';
+          icon = 'success';
+        }
+
+        Swal.fire({
+          title: title,
+          text: text,
+          icon: icon,
+          confirmButtonText: 'Aceptar'
+        }).then(result => {
+          if (result.isConfirmed) {
+            window.location.reload();
+          }
+        });
+      });
+    };
+
+    const enviar = () => {
+      const id = document.getElementById('reserva_id').value;
+      if (id == "")
+        registrar();
+      else
+        editar(id);
     };
 
     const showSearchModal = () => {
@@ -471,7 +528,7 @@
         cardContent.classList.add('card-content');
 
         cardContent.innerHTML = contenido;
-        cancelar.innerHTML = `<a style="cursor: pointer;" class="text-danger" onclick="cancelBooking(${reserva.id});"><i class="fas fa-close"></i></a>`;
+        cancelar.innerHTML = `<a style="cursor: pointer;" class="text-danger" onclick="cancelBooking(${reserva.id});" title="Cancelar Reservación"><i class="fas fa-close"></i></a><a style="cursor: pointer;" title="Editar Reservación" class="text-primary" onclick="editBooking(${reserva.id}, '${reserva.fecha_hora}', ${reserva.comensales});"><i class="fas fa-edit"></i></a>`;
         cardBody.appendChild(cardTitle);
         cardBody.appendChild(cardContent);
         row.appendChild(cardBody);
@@ -481,6 +538,31 @@
         contenidoReserva.appendChild(card);
       });
     };
+
+    const editBooking = (id, fecha_hora, comensales) => {
+      var myModal = bootstrap.Modal.getInstance(document.getElementById('searchBookingModal'));
+      myModal.hide();
+
+      let d = fecha_hora.split('-');
+      d = d[d.length - 1].split(' ');
+      let dayDate = d[0];
+      let hourDate = d[1].split(':');
+      hourDate = `${hourDate[0]}:${hourDate[1]}`;
+
+      document.getElementById('buttonReservar').innerHTML = "Editar Reserva";
+      document.getElementById('reserva_id').value = id;
+      
+      document.querySelectorAll(".day").forEach(day => {
+        if (day.classList.contains('selected'))
+          day.classList.remove('selected');
+
+        if (day.innerHTML == dayDate)
+          day.classList.add('selected');
+
+        document.getElementById("comensales").value = comensales;
+        document.getElementById("hora").value = hourDate;
+      });
+    }
 
     const cancelBooking = (id) => {
       Swal.fire({
