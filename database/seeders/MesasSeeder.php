@@ -14,10 +14,23 @@ class MesasSeeder extends Seeder
     public function run(): void
     {
         for ($i = 0; $i < 4; $i++) {
-            Mesa::factory()->create(['espacios' => 4]);
-            Mesa::factory()->create(['espacios' => 3]);
-            Mesa::factory()->create(['espacios' => 2]);
-            Mesa::factory()->create(['espacios' => 1]);
+            $j = 0;
+            Mesa::factory()->create([
+                'espacios' => 4,
+                'nombre' => $i.$j++
+            ]);
+            Mesa::factory()->create([
+                'espacios' => 3,
+                'nombre' => $i.$j++
+            ]);
+            Mesa::factory()->create([
+                'espacios' => 2,
+                'nombre' => $i.$j++
+            ]);
+            Mesa::factory()->create([
+                'espacios' => 1,
+                'nombre' => $i.$j++
+            ]);
         }
     }
 }

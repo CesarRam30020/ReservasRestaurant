@@ -19,7 +19,7 @@ class MesaFactory extends Factory {
     public function definition(): array {
         return [
             'espacios' => $this->faker->randomElement([1,2,3,4]),
-            'nombre' => $this->faker->name(),
+            'nombre' => $this->faker->randomNumber(2),
             'descripcion' => $this->faker->randomElement(["Mesa de caoba", "Mesa de hierro", "Mesa de la coca"]),
         ];
     }
