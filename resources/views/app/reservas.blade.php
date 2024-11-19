@@ -75,7 +75,7 @@
         </div>
         <h2 class="card-title">Reservas</h2>
         <div class="card-content row">
-          <table class="table">
+          <table class="table table-striped table-bordered display no-wrap" style="width:100%" id="table">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -116,11 +116,13 @@
 
 @section('js')
   <script>
+    $('#table').DataTable();
+
     const filtrar = () => {
       const comensales = document.getElementById('comensales').value;
       const fecha = document.getElementById('fecha').value;
       const estatus = document.getElementById('estatus').value;
       window.location.href = `{{ route('appIndex') }}?comensales=${comensales}&fecha=${fecha}&estatus=${estatus}`;
-    }
+    };
   </script>
 @endsection

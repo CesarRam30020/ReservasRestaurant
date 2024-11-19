@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('mesas', function (Blueprint $table) {
             $table->id();
             $table->integer('espacios');
+            $table->string('nombre', 50)->nullable();
+            $table->string('descripcion', 100)->nullable();
             $table->timestamps();
         });
     }

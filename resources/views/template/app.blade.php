@@ -6,6 +6,8 @@
   <title>@yield('title', 'Sabor a México')</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+
   <style>
     .sidebar {
       height: 100vh;
@@ -14,22 +16,20 @@
       left: 0;
       width: 250px;
       background-image: url('{{ asset('images/sidebar.jpg') }}');
-      background-size: cover; /* Ajusta la imagen al tamaño del sidebar */
-      background-position: center; /* Centra la imagen */
-      background-repeat: no-repeat; /* Evita que la imagen se repita */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       padding-top: 20px;
-      color: white; /* Asegúrate de que el texto sea visible sobre la imagen */
+      color: white;
     }
     .sidebar a {
       color: black;
       text-decoration: none;
       padding: 10px 15px;
       display: block;
-      /* background: rgb(2,0,36); */
     }
     .sidebar a:hover {
       background: linear-gradient(90deg, rgba(0,104,71,.5) 0%, rgba(255,255,255,.5) 35%, rgba(206,17,38,.5) 100%);
-      /* background: rgba(255, 255, 255, 0.3); */
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     }
     .resaltado {
@@ -87,6 +87,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
 
   @yield('js')
 </body>

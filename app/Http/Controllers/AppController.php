@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Mesa;
 use App\Models\Reserva;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -35,7 +36,21 @@ class AppController extends Controller
         ]);
     }
 
-    public function mesas() {
-        return view('app.mesas');
+    public function mesas(Request $request) {
+        $querys = [];
+
+        if (isset($request['comensales']) && $request['comensales'] != 0)
+            array_push($querys, ['espacios', $request['comensales']]);
+
+        if (isset($request['nombre']) && $request['nombre'] != "")
+            array_push($querys, ['nombre', 'like', '%'.$request['nombre'].'%']);
+
+        if (isset($request['descripcion']) && $request['descripcion'] != "")
+            array_push($querys, ['descripcion', 'like', '%'.$request['descripcion'].'%']);
+
+        $mesas = Mesa::where($querys)->get();
+        return view('app.mesas', [
+            "mesas" => $mesas
+        ]);
     }
 }
