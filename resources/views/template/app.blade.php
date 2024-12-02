@@ -33,11 +33,11 @@
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     }
     .resaltado {
-      background: rgba(255, 255, 255, 0.2); /* Fondo semitransparente */
-      border: 1px solid rgba(255, 255, 255, 0.3); /* Borde sutil */
-      border-radius: 0 50px 50px 0; /* Forma redondeada */
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); /* Sombra ligera */
-      backdrop-filter: blur(10px); /* Difumina el fondo detrás del botón */
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0 50px 50px 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(10px);
       padding: 15px 30px;
       font-size: 16px;
       color: white;

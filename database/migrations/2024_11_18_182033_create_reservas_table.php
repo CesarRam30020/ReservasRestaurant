@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigInteger('mesa_id')->unsigned()->nullable();
             $table->integer('comensales');
             $table->timestamp('fecha_hora');
-            $table->string('estatus', 10)->default('A')->comment('A = Activo, C = Cancelado, T = Terminado');
+            $table->string('estatus', 10)->default('A')->comment('A = Activo, C = Cancelado');
             $table->timestamps();
             $table->foreign('mesa_id')->references('id')->on('mesas');
         });

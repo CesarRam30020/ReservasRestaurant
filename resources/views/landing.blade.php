@@ -467,6 +467,17 @@
 
     const enviar = () => {
       const id = document.getElementById('reserva_id').value;
+      
+      if (daySelected == 0) {
+        Swal.fire({
+          title: "¡Lo sentimos!",
+          text: "Debes ingresar un dia valido",
+          icon: "error",
+          confirmButtonText: 'Aceptar'
+        });
+        return;
+      }
+
       if (id == "")
         registrar();
       else

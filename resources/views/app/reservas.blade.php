@@ -64,8 +64,8 @@
             <select name="estatus" id="estatus" class="form-control">
               <option value="-1">Selecciona un estatus</option>
               <option value="A"@if ($estatus == 'A') selected @endif>Activa</option>
-              <option value="T"@if ($estatus == 'T') selected @endif>Terminada</option>
-              <option value="C"@if ($estatus == 'C') selected @endif>Cancelada</option>
+              {{-- <option value="T"@if ($estatus == 'T') selected @endif>Terminada</option> --}}
+              <option value="C" @if ($estatus == 'C') selected @endif>Cancelada</option>
             </select>
           </div>
           <a style="cursor: pointer;" class="btn btn-secondary col-lg-2 col-12 mt-4" onclick="filtrar();">
